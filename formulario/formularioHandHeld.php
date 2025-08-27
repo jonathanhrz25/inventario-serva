@@ -1,0 +1,268 @@
+<?php
+session_name('inventario'); // Debe ser el mismo nombre de sesión
+session_start();
+require ("../php/connect.php");
+// Verifica si el usuario ha iniciado sesión
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../php/inicioSesion.php"); // Redirige al inicio de sesión si no ha iniciado sesión
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../img/icono2.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../css/dark.css">
+    <title>Sistema de Inventario</title>
+    <!-- Agregar enlaces a tus archivos CSS y JS -->
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-dark bg-dark fixed-top" style="background-color: #081856!important;">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white" href="../invent/handHeld.php">
+                    <img src="../img/icono2.png" alt="" height="35" class="d-inline-block align-text-top">
+                    Sistema de Inventario
+                </a>
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="modo" id="modo"></div>
+
+    <!-- Inicio de Formulario Hand Held -->
+    <div class="container col-8">
+        <form id="formulario" method="POST" action="../db/database_form_HH.php">
+
+            <div class="form-group mb-3"><br><br><br><br>
+                <label for="clave" class="form-label">Clave:</label>
+                <input type="text" name="clave" class="form-control" id="clave" aria-describedby="nameHelp"
+                    placeholder="Clave del equipo" required readonly />
+            </div>
+
+            <div class="form-group">
+                <label for="cedis" class="form-label" name="cedis">Cedis: </label><br>
+                <select class="form-control" id="cedis" name="cedis" onchange="actualizarClave()">
+                    <option value="">Seleccione el Cedis de la Hand Held…</option>
+                    <option value="PA PACHUCA">Pachuca</option>
+                    <option value="CA CANCUN">Cancun</option>
+                    <option value="CH CHIHUAHUA">Chihuahua</option>
+                    <option value="CL CULIACAN">Culiacan</option>
+                    <option value="CV CUERNAVACA">Cuernavaca</option>
+                    <option value="GD GUADALAJARA">Guadalajara</option>
+                    <option value="HR HERMOSILLO">Hermosillo</option>
+                    <option value="LE LEON">Leon</option>
+                    <option value="MR MERIDA">Merida</option>
+                    <option value="MT MONTERREY">Monterrey</option>
+                    <option value="OX OAXACA">Oaxaca</option>
+                    <option value="PU PUEBLA">Puebla</option>
+                    <option value="QR QUERETARO">Queretaro</option>
+                    <option value="SL SAN LUIS POTOSI">San Luis Potosi</option>
+                    <option value="TG TUXTLA GUTIERREZ">Tuxtla Gutuerrez</option>
+                    <option value="VH VILLAHERMOSA">Villahermosa</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="equipo" class="form-label" name="equipo">Tipo de Equipo: </label><br>
+                <select class="form-control" id="equipo" name="equipo" onchange="actualizarClave()">
+                    <option value="">Seleccione que tipo de equipo es…</option>
+                    <option value="PC ESCRITORIO">PC ESCRITORIO</option>
+                    <option value="MONITOR">Monitor</option>
+                    <option value="IMPRESORA">Impresora</option>
+                    <option value="HH HAND HELD">Hand Held</option>
+                    <option value="PANTALLA">Pantalla</option>
+                    <option value="LAPTOP">Laptop</option>
+                    <option value="NB NOBREAK">NoBreak</option>
+                    <option value="SA SWITCH O ACCESS POINT">Switch o Access Point</option>
+                    <option value="DD DISCO DURO EXTERNO">Disco duro externo</option>
+                </select>
+                </label>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="area" class="form-label" name="area">Area: </label><br>
+                <select class="form-control" id="area" name="area" onchange="actualizarClave()">
+                    <option value="">Seleccione el area de la Hand Held…</option>
+                    <option value="AD ADQUISICIONES">Adquisiciones</option>
+                    <option value="CE ADMINISTRACION CEDIS">Administracion Cedis</option>
+                    <option value="AL ALMACEN">Almacen</option>
+                    <option value="AC CENTRO DE ATENCION A CLIENTES">Centro de Atención al Cliente</option>
+                    <option value="BO BODEGAS">Bodegas</option>
+                    <option value="CM COMPRAS">Compras</option>
+                    <option value="CO CONTABILIDAD">Contabilidad</option>
+                    <option value="CC CREDITO Y COBRANZA">Credito y Cobranza</option>
+                    <option value="DE DEVOLUCIONES">Devoluciones</option>
+                    <option value="EM EMBARQUES">Embarques</option>
+                    <option value="FC FACTURACION">Facturacion</option>
+                    <option value="FI FINANZAS">Finanzas</option>
+                    <option value="FL FLOTILLAS">Flotillas</option>
+                    <option value="GC GERENCIA">Gerencia</option>
+                    <option value="IF IFUEL">IFuel</option>
+                    <option value="IN INVENTARIOS">Inventarios</option>
+                    <option value="JR JURIDICO">Juridico</option>
+                    <option value="ME MERCADOTECNIA">Mercadotecnia</option>
+                    <option value="MP MODELADO DE PRODUCTOS">Modelado de Productos</option>
+                    <option value="PE PRECIOS ESPECIALES">Precios Especiales</option>
+                    <option value="RH RECURSOS HUMANOS">Recursos Humanos</option>
+                    <option value="RE RECEPCION">Recepcion</option>
+                    <option value="RM RECEPCION DE MATERIALES">Recepcion de Materiales</option>
+                    <option value="AT REFACCIONARIA ACTOPAN">Refaccionaria Actopan</option>
+                    <option value="MA REFACCIONARIA MADERO">Refaccionaria Madero</option>
+                    <option value="MI REFACCIONARIA MINERO">Refaccionaria Minero</option>
+                    <option value="TU REFACCIONARIA TULANCINGO">Refaccionaria Tulancingo</option>
+                    <option value="RA REABASTOS">Reabastos</option>
+                    <option value="SM SERVICIO MEDICO">Servicio Medico</option>
+                    <option value="SI SISTEMAS">Sistemas</option>
+                    <option value="SC SURTIDO CEDIS">Surtido Cedis</option>
+                    <option value="TL TELEMARKETING">Telemarketing</option>
+                    <option value="VI VIGILANCIA">Vigilancia</option>
+                    <option value="VT VENTAS">Ventas</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="serie" class="form-label">Numero de Serie: </label>
+                <input type="text" name="serie" id="serie" aria-describedby="nameHelp" placeholder="No. Serie" />
+            </div>
+
+            <div class="form-group">
+                <label for="marca" class="form-label" name="marca">Marca:</label><br>
+                <select class="form-control" id="marca" name="marca">
+                    <option value="">Seleccione la marca de la PC…</option>
+                    <option value="ZEBRA">ZEBRA</option>
+                    <option value="NEWLAND">NEWLAND</option>
+                </select>
+                </label>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="exampleInputEmail1" class="form-label">Modelo: </label>
+                <input type="text" name="modelo" class="form-control" id="modelo" aria-describedby="nameHelp"
+                    placeholder="Modelo del Equipo" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="exampleInputEmail1" class="form-label">IP: </label>
+                <input type="text" name="ip" class="form-control" id="ip" aria-describedby="nameHelp"
+                    placeholder="Ingresa la IP" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="exampleInputEmail1" class="form-label">Usuario: </label>
+                <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="nameHelp"
+                    placeholder="Usuario Actual" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="exampleInputEmail1" class="form-label">Porcentaje de Eficiencia del equipo: </label>
+                <input type="text" name="estado" class="form-control" id="estado" aria-describedby="nameHelp"
+                    placeholder="Estado del Equipo" />
+            </div>
+
+            <div class="form-group">
+                <label for="proceso" class="form-label" name="proceso">Procedimiento: </label><br>
+                <select class="form-control" id="proceso" name="proceso">
+                    <option value="">Seleccione el Proceso de la Hand Held</option>
+                    <option value="En mantenimiento">Para mantenimiento</option>
+                    <option value="En reparacion">En reparación</option>
+                </select>
+                </label>
+            </div>
+
+            <div class="form-group"><br>
+                <label for="fechaCo" class="form-label">Fecha de Compra de Equipo: </label>
+                <input type="datetime-local" name="fechaCo" id="fechaCo">
+            </div>
+
+            <div class="form-group">
+                <label for="fechaAs" class="form-label">Fecha de Asignacion del Equipo: </label>
+                <input type="datetime-local" name="fechaAs" id="fechaAs">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Comentarios y Observaciones</label>
+                <textarea class="form-control" name="comentarios_y_observaciones" id="comentarios_y_observaciones"
+                    rows="3" placeholder="Escriba Comentarios y Observaciones"></textarea>
+            </div>
+
+    </div>
+    <!-- Fin de Formulario Hand Held -->
+
+    <!-- Boton de guardado Formulario -->
+    <div class="text-center">
+        <input type="submit" class="btn btn-primary" name="enviar" value="Guardar">
+    </div>
+    </form>
+
+    </div><br><br><!-- Fin de Boton -->
+
+
+</body>
+
+<script src="../js/main.js"></script>
+
+<script>
+    // Modifica esta función para manejar los eventos de cambio de los elementos select
+    function actualizarClave() {
+        // Obtener valores seleccionados
+        var cedi = document.getElementById("cedis").value;
+        var equipo = document.getElementById("equipo").value;
+        var area = document.getElementById("area").value;
+
+        // Hacer la solicitud AJAX para obtener la nueva clave del servidor
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "../php/generarClave.php", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                try {
+                    // Parsear la respuesta como JSON
+                    var respuesta = JSON.parse(xhr.responseText);
+
+                    // Actualizar los campos con la respuesta del servidor
+                    document.getElementById("clave").value = respuesta.nuevaClave;
+                    document.getElementById("numero_identificacion").value = respuesta.numeroConsecutivo;
+                } catch (error) {
+                    console.error("Error al parsear la respuesta JSON:", error);
+                }
+            }
+        };
+
+        // Codificar los parámetros de la solicitud correctamente
+        var params = "cedi=" + encodeURIComponent(cedi) + "&equipo=" + encodeURIComponent(equipo) + "&area=" + encodeURIComponent(area);
+
+        // Enviar la solicitud con los parámetros codificados
+        xhr.send(params);
+    }
+</script>
+
+<!-- <script> //Bloqueo clic derecho y bloqueo para visualizar codigo fuente
+    $(document).bind("contextmenu", function (e) {
+        e.preventDefault();
+    });
+
+    $(document).keydown(function (e) {
+        if (e.which === 123) {
+            return false;
+        }
+        if (e.ctrlKey && (e.keyCode == 'U'.charCodeAt(0) || e.keyCode == 'u'.charCodeAt(0))) {
+            return false;
+        }
+    });
+</script> -->
+
+</html>
+
+<?php include '../css/footer.php' ?>
